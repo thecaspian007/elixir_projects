@@ -13,12 +13,12 @@
   </.modal>
 <% end %>
 
-<table>
-  <tbody id="posts">
+
+  <div id="posts" phx-update="prepend">
     <%= for post <- @posts do %>
     <%= live_component @socket, TwittWeb.PostLive.PostComponent, id: post.id, post: post%>
     <% end %>
-  </tbody>
-</table>
+  </div>
+
 
 <span><%= live_patch "New Post", to: Routes.post_index_path(@socket, :new) %></span>

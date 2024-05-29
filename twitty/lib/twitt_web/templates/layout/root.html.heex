@@ -8,21 +8,139 @@
     <%= live_title_tag assigns[:page_title] || "Twitt", suffix: " · Phoenix Framework" %>
     <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/app.css")}/>
     <script defer phx-track-static type="text/javascript" src={Routes.static_path(@conn, "/assets/app.js")}></script>
+    <style>
+      body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f5f8fa;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      header {
+        width: 100%;
+        background-color: #1da1f2;
+        padding: 10px 0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .container {
+        width: 80%;
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      nav ul {
+        list-style: none;
+        padding: 0;
+        display: flex;
+      }
+      nav ul li {
+        margin-right: 20px;
+      }
+      nav ul li a {
+        color: white;
+        text-decoration: none;
+        font-size: 16px;
+      }
+      .phx-logo img {
+        height: 40px;
+      }
+      main {
+        width: 80%;
+        max-width: 1200px;
+        background-color: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+        padding: 20px;
+        border-radius: 10px;
+      }
+      .tweet {
+        padding: 10px;
+        border-bottom: 1px solid #e1e8ed;
+      }
+      .tweet:last-child {
+        border-bottom: none;
+      }
+      .tweet-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      .tweet-header img {
+        border-radius: 50%;
+        margin-right: 10px;
+      }
+      .tweet-header .username {
+        font-weight: bold;
+        margin-right: 5px;
+      }
+      .tweet-header .timestamp {
+        color: #657786;
+      }
+      .tweet-content {
+        font-size: 14px;
+        color: #14171a;
+      }
+      .tweet-actions {
+        margin-top: 10px;
+        display: flex;
+        justify-content: space-between;
+      }
+      .tweet-actions button {
+        background: none;
+        border: none;
+        color: #1da1f2;
+        cursor: pointer;
+      }
+      .tweet-actions button:hover {
+        text-decoration: underline;
+      }
+      footer {
+        margin-top: 20px;
+        padding: 10px 0;
+        background-color: #1da1f2;
+        color: white;
+        width: 100%;
+        text-align: center;
+      }
+    </style>
   </head>
   <body>
     <header>
       <section class="container">
         <nav>
           <ul>
-            <li><a href="https://hexdocs.pm/phoenix/overview.html">Get Started</a></li>
-            
+            <li><a href="https://hexdocs.pm/phoenix/overview.html">Login</a></li>
           </ul>
         </nav>
-        <a href="https://phoenixframework.org/" class="phx-logo">
-          <img src={Routes.static_path(@conn, "/images/phoenix.png")} alt="Phoenix Framework Logo"/>
+        <a class="phx-logo">
+          <img src={Routes.static_path(@conn, "/images/logo.png")} alt="Twitty"/>
         </a>
       </section>
     </header>
-    <%= @inner_content %>
+    <main>
+      <%= @inner_content %>
+    </main>
+    <footer>
+      © 2024 Twitt. All rights reserved.
+    </footer>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        // Add your JavaScript functionality here
+        // Example: Toggle tweet actions on hover
+        const tweets = document.querySelectorAll('.tweet');
+        tweets.forEach(tweet => {
+          tweet.addEventListener('mouseover', () => {
+            tweet.querySelector('.tweet-actions').style.display = 'flex';
+          });
+          tweet.addEventListener('mouseout', () => {
+            tweet.querySelector('.tweet-actions').style.display = 'none';
+          });
+        });
+      });
+    </script>
   </body>
 </html>

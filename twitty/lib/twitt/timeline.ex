@@ -18,7 +18,7 @@ defmodule Twitt.Timeline do
 
   """
   def list_posts do
-    Repo.all(Post)
+    Repo.all(from post in Post, order_by: [desc: post.id])
   end
 
   @doc """
@@ -53,6 +53,7 @@ defmodule Twitt.Timeline do
     %Post{}
     |> Post.changeset(attrs)
     |> Repo.insert()
+    |> broadcast(:post_created)
   end
 
   @doc """
@@ -71,6 +72,7 @@ defmodule Twitt.Timeline do
     post
     |> Post.changeset(attrs)
     |> Repo.update()
+    |> broadcast(:post_updated)
   end
 
   @doc """
@@ -89,6 +91,22 @@ defmodule Twitt.Timeline do
     Repo.delete(post)
   end
 
+  def inc_likes(%Post{id: id}) do
+    {1, [post]} =
+      from(post in Post, where: post.id == ^id, select: post)
+      |> Repo.update_all(inc: [likes_count: 1])
+
+    broadcast({:ok, post}, :post_updated)
+  end
+
+  def inc_reposts(%Post{id: id}) do
+    {1, [post]} =
+      from(post in Post, where: post.id == ^id, select: post)
+      |> Repo.update_all(inc: [reposts_count: 1])
+
+    broadcast({:ok, post}, :post_updated)
+  end
+
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking post changes.
 
@@ -100,5 +118,16 @@ defmodule Twitt.Timeline do
   """
   def change_post(%Post{} = post, attrs \\ %{}) do
     Post.changeset(post, attrs)
+  end
+
+  def subscribe do
+    Phoenix.PubSub.subscribe(Twitt.PubSub, "posts")
+  end
+
+  defp broadcast({:error, _reason} = error, _event), do: error
+
+  defp broadcast({:ok, post}, event) do
+    Phoenix.PubSub.broadcast(Twitt.PubSub, "posts", {event, post})
+    {:ok, post}
   end
 end
