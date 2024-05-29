@@ -5,45 +5,31 @@ defmodule TwittWeb.PostLive.PostComponent do
 
   def render(assigns) do
     ~H"""
-    <div id={"post-#{@post.id}"} class="post">
-      <div class="row post-header">
-        <div class="column column-10">
-          <div class="post-avatar">
-            <img src="https://via.placeholder.com/100" alt={@post.username} />
-          </div>
-        </div>
-        <div class="column column-90 post-body">
-          <span class="user_name">@<%= @post.username %></span>
-          <br />
-          <p><%= @post.body %></p>
-        </div>
+    <div id={"post-#{@post.id}"} class="tweet">
+      <div class="tweet-header">
+        <img src="https://via.placeholder.com/50" alt={@post.username} />
+        <span class="username">@<%= @post.username %></span>
       </div>
-
-      <div class="row actions_bar">
-        <div class="column column-33 text-center">
-          <a href="#" phx-click="like" phx-target={@myself} class="action-button">
-            <span>💟</span> <%= @post.likes_count %>
-          </a>
-        </div>
-        <div class="column column-33 text-center">
-          <a href="#" phx-click="repost" phx-target={@myself} class="action-button">
-            <span>🔄</span> <%= @post.reposts_count %>
-          </a>
-        </div>
-        <div class="column column-33 text-center">
-          <%= live_patch to: Routes.post_index_path(@socket, :edit, @post.id), class: "action-button" do %>
-            <span>✏️</span>
-          <% end %>
-          <span>&nbsp;&nbsp;</span>
-          <%= link to: "#", phx_click: "delete", phx_value_id: @post.id, data: [confirm: "Are you sure?"], class: "action-button" do %>
-            <span>❌</span>
-          <% end %>
-        </div>
+      <div class="tweet-content">
+        <p><%= @post.body %></p>
+      </div>
+      <div class="tweet-actions">
+        <button phx-click="like" phx-target={@myself}>
+          💟 <%= @post.likes_count %>
+        </button>
+        <button phx-click="repost" phx-target={@myself}>
+          🔄 <%= @post.reposts_count %>
+        </button>
+        <%= live_patch to: Routes.post_index_path(@socket, :edit, @post.id) do %>
+          ✏️
+        <% end %>
+        <%= link to: "#", phx_click: "delete", phx_value_id: @post.id, data: [confirm: "Are you sure?"] do %>
+          ❌
+        <% end %>
       </div>
     </div>
     """
   end
-
 
   def handle_event("delete", _, socket) do
     {:noreply, socket}
